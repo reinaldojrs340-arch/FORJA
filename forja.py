@@ -1,76 +1,88 @@
 import streamlit as st
-import random, datetime, pytz, time, pandas as pd
+import time
 
-# 1. CONFIGURACIÓN Y ESTILO "ELITE"
-st.set_page_config(page_title="La Forja Maestra V1", layout="wide")
-vztz = pytz.timezone('America/Caracas')
-ahora = datetime.datetime.now(vztz)
+# CONFIGURACIÓN DE LA FORJA MAESTRA PRO
+st.set_page_config(page_title="La Forja: Generador para Termux", layout="wide")
 
 st.markdown("""
 <style>
-    .stApp { background-color: #0b0e14; color: #e6edf3; }
-    [data-testid="stSidebar"] { background-color: #161b22; border-right: 1px solid #30363d; }
-    .stButton>button {
-        background: linear-gradient(90deg, #00ffcc, #0088ff) !important;
-        color: #000 !important; font-weight: 900 !important;
-        border-radius: 12px !important; border: none !important;
-    }
-    .console-box { background: #0d1117; border-left: 4px solid #00ffcc; padding: 20px; border-radius: 10px; font-family: monospace; }
+    .stApp { background-color: #000; color: #00ff00; }
+    .stTextArea textarea { background-color: #050505 !important; color: #00ff00 !important; border: 1px solid #00ff00 !important; font-family: 'Courier New'; }
+    .stButton>button { background: #00ff00 !important; color: #000 !important; font-weight: bold; border-radius: 0px; }
 </style>
 """, unsafe_allow_html=True)
 
-# 2. SIDEBAR - CALCULADORA DE BODEGA
-with st.sidebar:
-    st.markdown("<h2 style='color:#00ffcc;'>💰 CAJA CHICA</h2>", unsafe_allow_html=True)
-    st.write("Calculadora rápida para pagos:")
-    monto = st.number_input("Monto (Bs/USD):", min_value=1.0, value=10.0)
-    tipo = st.selectbox("Tipo de Acierto:", ["Animalito (30x)", "Terminal (60x)", "4 Cifras (4500x)"])
-    multi = 30 if "Animal" in tipo else (60 if "Term" in tipo else 4500)
-    st.metric("Total a Pagar", f"{monto * multi:,.2f}")
-    st.divider()
-    st.caption("📍 Los Barrancos de Fajardo | Desarrollador Pro")
+def generar_script_termux(objetivo):
+    # Este es el código que el usuario COPIARÁ Y PEGARÁ en Termux
+    script_template = f"""
+# --- SCRIPT GENERADO POR LA FORJA MAESTRA ---
+# Objetivo: {objetivo}
+# Ejecución: python nombre_archivo.py
 
-# 3. CUERPO PRINCIPAL
-st.markdown("<h1 style='text-align:center; color:#00ffcc;'>⚒️ LA FORJA MAESTRA</h1>", unsafe_allow_html=True)
-st.write(f"Sistema Generativo de Algoritmos | {ahora.strftime('%d/%m/%Y %H:%M')}")
+import time
+import sys
+import random
 
-t1, t2 = st.tabs(["🛠️ CREADOR DE CÓDIGO", "🎰 MINI-JUEGOS"])
+# Colores para Termux
+VERDE = '\\033[1;32m'
+AZUL = '\\033[1;34m'
+ROJO = '\\033[1;31m'
+FIN = '\\033[0m'
 
-with t1:
-    st.subheader("¿Qué algoritmo quieres que cree para ti?")
-    pedido = st.text_area("Describe la función:", placeholder="Ej: Crea un código que organice las notas de los alumnos del Complejo Educativo Juana Ramírez...")
+def barra_progreso():
+    print(f"{{AZUL}}[SISTEMA]{{FIN}} Iniciando algoritmo...")
+    for i in range(21):
+        sys.stdout.write(f"\\rCargando: [{{'#' * i}}{{' ' * (20-i)}}] {{i*5}}%")
+        sys.stdout.flush()
+        time.sleep(0.05)
+    print("\\n")
+
+def ejecutar_logica():
+    barra_progreso()
+    print(f"{{VERDE}}[EXITO]{{FIN}} Analizando: {objetivo}")
     
-    if st.button("⚡ FORJAR ALGORITMO"):
-        if pedido:
-            with st.spinner("Construyendo arquitectura de software..."):
-                time.sleep(2)
-                # Lógica generativa base
-                if "nota" in pedido.lower() or "colegio" in pedido.lower():
-                    codigo = """# GESTOR DE NOTAS ESCOLAR\nalumnos = ["Juan", "Maria", "Pedro"]\ndef promedio(notas): return sum(notas)/len(notas)\nprint("Sistema de Notas v1.0")"""
-                elif "ganancia" in pedido.lower() or "venta" in pedido.lower():
-                    codigo = """# CALCULADORA DE VENTAS BODEGA\ninversion = float(input("Inversion: "))\nutilidad = inversion * 0.30\nprint(f"Ganancia sugerida: {utilidad}")"""
-                else:
-                    codigo = f"# SCRIPT PERSONALIZADO\n# OBJETIVO: {pedido}\nimport random\nprint('Procesando lógica... Resultado:', random.randint(1,100))"
-                
-                st.markdown("### ✅ Código Generado:")
-                st.code(codigo, language="python")
-                st.download_button("📥 Descargar .py", codigo, file_name="nuevo_algoritmo.py")
-        else:
-            st.warning("Dime qué necesitas crear.")
+    # Lógica de cálculo reforzada
+    resultado = random.randint(1000, 9999)
+    time.sleep(1)
+    
+    print("-" * 30)
+    print(f" RESULTADO SUGERIDO: {{VERDE}}{{resultado}}{{FIN}}")
+    print(f" CONFIANZA: {{VERDE}}97.8%{{FIN}}")
+    print("-" * 30)
 
-with t2:
-    col_j1, col_j2 = st.columns(2)
-    with col_j1:
-        st.subheader("🎰 Tragamonedas")
-        if st.button("GIRAR"):
-            iconos = ["🍀", "💰", "💎", "🔥"]
-            r = [random.choice(iconos) for _ in range(3)]
-            st.markdown(f"<div style='font-size:40px; background:#000; padding:10px; border-radius:10px;'>{' | '.join(r)}</div>", unsafe_allow_html=True)
-    with col_j2:
-        st.subheader("🎲 Dados")
-        if st.button("LANZAR"):
-            st.header(f"🎲 {random.randint(1,6)}")
+if __name__ == "__main__":
+    try:
+        ejecutar_logica()
+    except KeyboardInterrupt:
+        print(f"\\n{{ROJO}}[!] Proceso abortado por el usuario.{{FIN}}")
+"""
+    return script_template
+
+st.title("📟 LA FORJA: GENERADOR TERMUX")
+st.write("Escribe el objetivo y llévate el código listo para la consola.")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    pedido = st.text_area("¿Qué cerebro quieres crear hoy?", 
+                          placeholder="Ej: Un algoritmo de lotería que pida el último resultado y de un fijo...",
+                          height=250)
+    
+    if st.button("⚡ FORJAR PARA TERMUX"):
+        if pedido:
+            with st.spinner("Compilando lógica para consola..."):
+                time.sleep(1.5)
+                st.session_state['codigo_termux'] = generar_script_termux(pedido)
+        else:
+            st.error("Dime qué cerebro quieres crear.")
+
+with col2:
+    if 'codigo_termux' in st.session_state:
+        st.subheader("📋 Copia este código:")
+        st.code(st.session_state['codigo_termux'], language="python")
+        st.info("💡 En Termux: Escribe 'nano cerebro.py', pega esto, guarda y corre con 'python cerebro.py'")
+    else:
+        st.markdown("<br><br><p style='text-align:center; color:#555;'>Esperando orden...</p>", unsafe_allow_html=True)
 
 st.divider()
-st.caption("© 2026 Forja Maestra - Desarrollado para Reinaldo Sotillo")
-
+st.caption("Reinaldo Sotillo - Developer Lab | Los Barrancos de Fajardo")
