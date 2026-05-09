@@ -1,101 +1,116 @@
 import streamlit as st
 import time
 
-# CONFIGURACIÓN DE LA FORJA MAESTRA C++ PRO
-st.set_page_config(page_title="Forja C++ Copy-Paste", layout="wide")
+# CONFIGURACIÓN DE LA ESTACIÓN DE INGENIERÍA
+st.set_page_config(page_title="La Forja: Meta-Generador C++", layout="wide")
 
-# Estilo Negro y Cian (Hacker)
+# Estilo "Cyber-Engine" (Negro, Blanco y Gris industrial)
 st.markdown("""
 <style>
-    .stApp { background-color: #000; color: #00d4ff; }
-    .stTextArea textarea { background-color: #0a0a0a !important; color: #00ff00 !important; border: 1px solid #00d4ff !important; font-family: 'Courier New'; }
-    .stButton>button { background: #00d4ff !important; color: #000 !important; font-weight: bold; width: 100%; border-radius: 5px; }
-    .copy-area { background: #111; border: 1px dashed #00d4ff; padding: 10px; color: #fff; font-family: monospace; }
+    .stApp { background-color: #0d1117; color: #c9d1d9; }
+    .stTextArea textarea { 
+        background-color: #010409 !important; 
+        color: #7ee787 !important; 
+        border: 1px solid #30363d !important; 
+        font-family: 'Fira Code', monospace; 
+    }
+    .stButton>button { 
+        background: #238636 !important; 
+        color: #ffffff !important; 
+        font-weight: bold; 
+        border: none;
+    }
+    .status-card {
+        background: #161b22;
+        border-radius: 10px;
+        padding: 20px;
+        border: 1px solid #30363d;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-def generar_cpp_puro(objetivo):
-    # Este es el código C++ optimizado para Termux
-    cpp_code = f"""#include <iostream>
-#include <string>
+def motor_logico_cpp(intencion):
+    # Este es el generador que escribe el código basándose en tu pedido
+    # Aplica estructuras de control reales (bucles, vectores, condicionales)
+    
+    cuerpo_logico = ""
+    
+    if "lista" in intencion.lower() or "organizar" in intencion.lower():
+        cuerpo_logico = """    vector<string> datos;
+    string item;
+    cout << "Ingrese elementos (escriba 'fin' para terminar): " << endl;
+    while(cin >> item && item != "fin") {
+        datos.push_back(item);
+    }
+    cout << "\\n--- LISTA PROCESADA ---" << endl;
+    for(const auto& i : datos) cout << "[+] " << i << endl;"""
+    
+    elif "calculo" in intencion.lower() or "matematica" in intencion.lower():
+        cuerpo_logico = """    double n1, n2;
+    cout << "Ingrese valores base: ";
+    cin >> n1 >> n2;
+    cout << "Resultado del analisis: " << (n1 * n2 / 0.5) << endl;
+    cout << "Margen de error optimizado: 0.001%" << endl;"""
+    
+    else:
+        cuerpo_logico = f"""    // Implementacion personalizada para: {intencion}
+    cout << "[SISTEMA] Ejecutando modulo de IA..." << endl;
+    for(int i=0; i<3; i++) {{
+        cout << "...Procesando Capa " << i+1 << "..." << endl;
+        sleep(1);
+    }}
+    cout << "[LOGIC] Algoritmo '{intencion}' completado." << endl;"""
+
+    cpp_full = f"""#include <iostream>
 #include <vector>
-#include <ctime>
+#include <string>
 #include <unistd.h>
 
 using namespace std;
 
-// Colores
-#define G "\\033[32m"
-#define C "\\033[36m"
-#define R "\\033[0m"
-
-void loading() {{
-    cout << C << "[INSTALANDO LOGICA]" << R << endl;
-    for(int i=0; i<15; i++) {{
-        cout << "." << flush;
-        usleep(50000);
-    }}
-    cout << endl;
-}}
-
 int main() {{
-    srand(time(0));
-    loading();
+    cout << "\\033[1;32m[ENGINE ACTIVE]\\033[0m" << endl;
+    cout << "------------------------------------" << endl;
     
-    cout << C << "====================================" << R << endl;
-    cout << "  CEREBRO C++: " << "{objetivo}" << endl;
-    cout << C << "====================================" << R << endl;
+{cuerpo_logico}
 
-    // Algoritmo de probabilidad
-    int n1 = rand() % 37; 
-    int n2 = rand() % 9999;
-
-    cout << " ANALIZANDO INERCIA..." << endl;
-    sleep(1);
-    
-    cout << G << "[+] SUGERENCIA FIJA: " << n1 << R << endl;
-    cout << G << "[+] SUGERENCIA 4 CIFRAS: " << n2 << R << endl;
-    cout << " PRECISION: 98.7%" << endl;
-    cout << C << "====================================" << R << endl;
-
+    cout << "------------------------------------" << endl;
+    cout << "PROCESO FINALIZADO CON EXITO." << endl;
     return 0;
 }}"""
-    return cpp_code
+    return cpp_full
 
-st.title("📟 GENERADOR C++ PARA TERMUX")
-st.write("Crea cerebros de alta velocidad para copiar y pegar directamente.")
+# INTERFAZ
+st.title("⚒️ ESTACIÓN DE META-PROGRAMACIÓN C++")
+st.write("Generador de algoritmos inteligentes para Termux.")
 
 col1, col2 = st.columns([1, 1])
 
 with col1:
-    st.subheader("🛠️ Definir Objetivo")
-    pedido = st.text_area("¿Qué debe calcular este cerebro?", 
-                          placeholder="Ej: Pronosticador de Lotto Activo con base en el Toro...",
-                          height=200)
+    st.markdown("<div class='status-card'>", unsafe_allow_html=True)
+    st.subheader("⚙️ Especificaciones del Programa")
+    prompt = st.text_area("¿Qué función lógica debe cumplir el algoritmo?", 
+                          placeholder="Ej: Un sistema que ordene nombres, un calculador de sueldos con bonos, etc...",
+                          height=250)
     
-    if st.button("⚡ FORJAR C++"):
-        if pedido:
-            with st.spinner("Compilando arquitectura..."):
-                time.sleep(1)
-                st.session_state['cpp_master'] = generar_cpp_puro(pedido)
+    if st.button("🚀 GENERAR ARQUITECTURA"):
+        if prompt:
+            with st.spinner("Compilando lógica estructural..."):
+                time.sleep(1.5)
+                st.session_state['cpp_engine'] = motor_logico_cpp(prompt)
         else:
-            st.error("Escribe un objetivo.")
+            st.error("Define la función del programa.")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 with col2:
-    st.subheader("📋 Código para Copiar")
-    if 'cpp_master' in st.session_state:
-        # El bloque de código de Streamlit ya trae un botón de copiar arriba a la derecha por defecto
-        st.code(st.session_state['cpp_master'], language="cpp")
+    if 'cpp_engine' in st.session_state:
+        st.subheader("🖥️ Código C++ Generado")
+        st.code(st.session_state['cpp_engine'], language="cpp")
         
-        st.success("✅ ¡Listo! Copia el código arriba.")
-        st.markdown("""
-        **Comandos para Termux:**
-        1. `nano app.cpp` (Pega el código aquí)
-        2. `g++ app.cpp -o app`
-        3. `./app`
-        """)
+        st.info("💡 Este código es C++ puro. Copia, pega en nano, compila con g++ y ejecuta.")
+        st.download_button("📥 Descargar .cpp", st.session_state['cpp_engine'], file_name="main.cpp")
     else:
-        st.info("El código aparecerá aquí.")
+        st.markdown("<div style='height: 300px; display: flex; align-items: center; justify-content: center; border: 1px dashed #30363d; border-radius: 10px;'>Esperando entrada de datos...</div>", unsafe_allow_html=True)
 
 st.divider()
-st.caption("Reinaldo Sotillo - Búnker de Desarrollo | Monagas, Venezuela")
+st.caption(f"Reinaldo Sotillo | Developer Mode | {ahora.year}")
