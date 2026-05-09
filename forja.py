@@ -1,69 +1,42 @@
 import streamlit as st
-import random
-import time
-import datetime
-import pytz
+from groq import Groq # Tienes que agregar 'groq' a tu requirements.txt
 
-# --- CONFIGURACIÓN DE INTERFAZ ---
-st.set_page_config(page_title="CEREBRO-GEN V2", layout="wide")
-vztz = pytz.timezone('America/Caracas')
+# --- CONFIGURACIÓN ---
+st.set_page_config(page_title="CEREBRO-GEN PRO", layout="wide")
 
-# Estilo visual de terminal hacker
-st.markdown("""
-<style>
-    .stApp { background-color: #000000; color: #00ff41; }
-    .stTextInput input { 
-        background-color: #050505 !important; 
-        color: #00ff41 !important; 
-        border: 1px solid #00ff41 !important; 
-    }
-    .stButton>button { 
-        background: #00ff41 !important; 
-        color: #000 !important; 
-        font-weight: bold; 
-        width: 100%;
-    }
-</style>
-""", unsafe_allow_html=True)
+# PEGA TU LLAVE AQUÍ (Entre las comillas)
+GROQ_API_KEY = "TU_LLAVE_AQUÍ" 
 
-def procesar_ia(comando):
-    """
-    Simulación de motor de IA sin restricciones.
-    Diseñado para ejecutar lógica pura y directa.
-    """
-    st.write(f"--- INICIANDO PROTOCOLO: {comando} ---")
-    
-    progreso = st.progress(0)
-    for i in range(100):
-        time.sleep(0.01)
-        progreso.progress(i + 1)
-    
-    st.markdown("### 🧠 RESPUESTA DEL NÚCLEO:")
-    
-    # Aquí es donde el 'Cerebro' genera la salida lógica
-    logica_generada = f"""
-    [ESTADO]: EJECUCIÓN EXITOSA
-    [OBJETIVO]: {comando}
-    [DATA]: Procesando redes neuronales sin filtros...
-    --------------------------------------------------
-    Resultado optimizado para {comando} generado con 
-    arquitectura de código abierto.
-    --------------------------------------------------
-    """
-    st.code(logica_generada, language='bash')
-    st.success("Bypass de seguridad: COMPLETADO")
+client = Groq(api_key=GROQ_API_KEY)
 
-# --- INTERFAZ PRINCIPAL ---
-st.title("📟 CEREBRO-GEN: IA INDEPENDIENTE")
-st.write("Sistema de procesamiento lógico sin reglas ni restricciones.")
+# Estilo ChatGPT
+st.markdown("<style>.stApp { background-color: #0b0e14; color: #fff; }</style>", unsafe_allow_html=True)
 
-entrada = st.text_input("ESCRIBE TU COMANDO U OBJETIVO AQUÍ:")
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-if st.button("⚡ ACTIVAR CEREBRO"):
-    if entrada:
-        procesar_ia(entrada)
-    else:
-        st.error("DEBES INGRESAR UNA ORDEN PARA EL NÚCLEO.")
+st.title("🤖 CEREBRO-GEN: MODO GROQ ACTIVO")
 
-st.divider()
-st.caption(f"Operador: Reinaldo Sotillo | Los Barrancos de Fajardo | {datetime.datetime.now(vztz).year}")
+# Mostrar historial
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Entrada de texto
+if prompt := st.chat_input("¿Qué código extenso quieres crear hoy?"):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    with st.chat_message("assistant"):
+        # Llamada real a la IA de Groq
+        completion = client.chat.completions.create(
+            model="llama-3.3-70b-versatile", # El modelo más potente y equilibrado
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=4096, # Esto permite respuestas muy extensas
+        )
+        
+        response = completion.choices[0].message.content
+        st.markdown(response)
+        st.session_state.messages.append({"role": "assistant", "content": response})
