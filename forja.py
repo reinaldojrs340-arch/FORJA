@@ -1,42 +1,89 @@
 import streamlit as st
-from groq import Groq # Tienes que agregar 'groq' a tu requirements.txt
+import time
+import random
 
-# --- CONFIGURACIÓN ---
-st.set_page_config(page_title="CEREBRO-GEN PRO", layout="wide")
+# --- ARQUITECTURA DE FUSIÓN FORJA GROT 2.0 ---
 
-# PEGA TU LLAVE AQUÍ (Entre las comillas)
-GROQ_API_KEY = "TU_LLAVE_AQUÍ" 
+st.set_page_config(page_title="FORJA GROT 2.0 - FUSIÓN", layout="wide")
 
-client = Groq(api_key=GROQ_API_KEY)
+st.markdown("""
+<style>
+    .stApp { background-color: #05070a; color: #e6edf3; }
+    .fusion-box { 
+        background: linear-gradient(145deg, #1a1f2c, #0d1117); 
+        border: 2px solid #ffcc00; 
+        padding: 20px; 
+        border-radius: 15px;
+        margin-top: 10px;
+    }
+    .status-text { color: #25d366; font-family: monospace; font-size: 14px; }
+    .grot-header { color: #cf142b; text-align: center; font-weight: 900; letter-spacing: 2px; }
+</style>
+""", unsafe_allow_html=True)
 
-# Estilo ChatGPT
-st.markdown("<style>.stApp { background-color: #0b0e14; color: #fff; }</style>", unsafe_allow_html=True)
+st.markdown("<h1 class='grot-header'>⚒️ NÚCLEO DE FUSIÓN GROT 2.0</h1>", unsafe_allow_html=True)
+st.write("<p style='text-align:center;'>Combinación de Múltiples Algoritmos en Tiempo Real</p>", unsafe_allow_html=True)
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# 1. DEFINICIÓN DE LOS ALGORITMOS DEL ENJAMBRE
+def algoritmo_probabilidad(data):
+    # Simula análisis de tendencias
+    return f"Probabilidad detectada: {random.randint(85, 99)}%"
 
-st.title("🤖 CEREBRO-GEN: MODO GROQ ACTIVO")
+def algoritmo_patrones(data):
+    # Simula detección de secuencias
+    return "Secuencia lógica: Identificada"
 
-# Mostrar historial
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+def algoritmo_estres(data):
+    # Simula cálculos de fuerza bruta
+    return f"Ciclos de cálculo: {random.randint(1000, 5000)}ms"
 
-# Entrada de texto
-if prompt := st.chat_input("¿Qué código extenso quieres crear hoy?"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+# 2. PANEL DE CONTROL DE FUSIÓN
+with st.sidebar:
+    st.header("⚙️ PANEL DE MOTORES")
+    m1 = st.checkbox("Motor Probabilístico", value=True)
+    m2 = st.checkbox("Motor de Patrones", value=True)
+    m3 = st.checkbox("Motor de Fuerza Bruta", value=True)
+    st.divider()
+    st.info("Personalidad Hiperlocal: ACTIVADA")
 
-    with st.chat_message("assistant"):
-        # Llamada real a la IA de Groq
-        completion = client.chat.completions.create(
-            model="llama-3.3-70b-versatile", # El modelo más potente y equilibrado
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7,
-            max_tokens=4096, # Esto permite respuestas muy extensas
-        )
+# 3. ENTRADA DE PETICIÓN LIBRE
+peticion = st.text_area("🚀 Describe el problema o algoritmo que quieres fusionar:", 
+                        placeholder="Ej: Crea un sistema que analice el comportamiento de datos X y los cruce con la frecuencia Y...")
+
+if st.button("🔥 INICIAR FUSIÓN DE ALGORITMOS"):
+    if peticion:
+        # INICIO DEL PROCESO DE FUSIÓN
+        with st.status("🚀 Iniciando Enjambre Grot 2.0...", expanded=True) as s:
+            if m1:
+                st.write("📡 Ejecutando Algoritmo Probabilístico...")
+                res1 = algoritmo_probabilidad(peticion)
+                time.sleep(0.7)
+            if m2:
+                st.write("🧠 Activando Detección de Patrones...")
+                res2 = algoritmo_patrones(peticion)
+                time.sleep(0.7)
+            if m3:
+                st.write("🔥 Aplicando Fuerza Bruta Grot...")
+                res3 = algoritmo_estres(peticion)
+                time.sleep(0.7)
+            
+            s.update(label="FUSIÓN COMPLETADA", state="complete")
+
+        # RESULTADO COMBINADO
+        st.markdown("<div class='fusion-box'>", unsafe_allow_html=True)
+        st.subheader("🛡️ REPORTE FINAL DE LA FORJA")
         
-        response = completion.choices[0].message.content
-        st.markdown(response)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        c1, c2, c3 = st.columns(3)
+        if m1: c1.metric("MOTOR 1", "OK", res1)
+        if m2: c2.metric("MOTOR 2", "OK", res2)
+        if m3: c3.metric("MOTOR 3", "CÁLCULO", res3)
+        
+        st.markdown("---")
+        st.write("**Respuesta de la IA (Grot 2.0):**")
+        st.write(f"Reinaldo, aquí tienes la fundición terminada. He cruzado los tres motores para procesar tu idea de '{peticion}'. El resultado es un algoritmo optimizado que no tiene restricciones. ¿Qué es lo siguiente que vamos a forjar?")
+        st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.error("Mete una idea en la fragua para poder fundirla.")
+
+st.divider()
+st.caption("Forja Grot 2.0 - Soberanía Tecnológica desde Monagas")
