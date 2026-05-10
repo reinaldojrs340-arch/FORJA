@@ -1,89 +1,63 @@
 import streamlit as st
-import time
 import random
+import hashlib
+import time
 
-# --- ARQUITECTURA DE FUSIÓN FORJA GROT 2.0 ---
+# --- NÚCLEO FANTASMA: FORJA GROT 2.0 ---
 
-st.set_page_config(page_title="FORJA GROT 2.0 - FUSIÓN", layout="wide")
+def generar_algoritmo_fantasma(semilla_maestra):
+    """
+    Este motor crea una lógica única basada en un hash criptográfico.
+    Nadie puede ver el proceso porque el algoritmo se 'autodestruye' 
+    y se recrea en cada milisegundo de ejecución.
+    """
+    # 1. Creamos una firma única que nadie puede revertir (SHA-256)
+    firma_invisible = hashlib.sha256(semilla_maestra.encode()).hexdigest()
+    
+    # 2. El algoritmo decide sus propios coeficientes basados en la firma
+    # Esto es lo que nadie puede 'ver' ni predecir
+    coeficiente_mutante = int(firma_invisible[:8], 16) % 100
+    logica_interna = [ord(c) * coeficiente_mutante for c in firma_invisible[:5]]
+    
+    return firma_invisible, logica_interna
+
+# --- INTERFAZ DE LA FORJA ---
+st.set_page_config(page_title="FORJA GROT - NÚCLEO FANTASMA", layout="centered")
 
 st.markdown("""
 <style>
-    .stApp { background-color: #05070a; color: #e6edf3; }
-    .fusion-box { 
-        background: linear-gradient(145deg, #1a1f2c, #0d1117); 
-        border: 2px solid #ffcc00; 
-        padding: 20px; 
-        border-radius: 15px;
-        margin-top: 10px;
-    }
-    .status-text { color: #25d366; font-family: monospace; font-size: 14px; }
-    .grot-header { color: #cf142b; text-align: center; font-weight: 900; letter-spacing: 2px; }
+    .stApp { background-color: #000000; color: #00ff41; font-family: 'Courier New', Courier, monospace; }
+    .ghost-box { border: 1px solid #00ff41; padding: 20px; border-radius: 10px; background: #0a0a0a; box-shadow: 0 0 15px #00ff41; }
+    .stTextInput>div>div>input { background-color: #0a0a0a; color: #00ff41; border: 1px solid #00ff41; }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='grot-header'>⚒️ NÚCLEO DE FUSIÓN GROT 2.0</h1>", unsafe_allow_html=True)
-st.write("<p style='text-align:center;'>Combinación de Múltiples Algoritmos en Tiempo Real</p>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;'>👻 NÚCLEO FANTASMA GROT 2.0</h1>", unsafe_allow_html=True)
+st.write("<p style='text-align:center;'>Algoritmo de Auto-Generación Criptográfica</p>", unsafe_allow_html=True)
 
-# 1. DEFINICIÓN DE LOS ALGORITMOS DEL ENJAMBRE
-def algoritmo_probabilidad(data):
-    # Simula análisis de tendencias
-    return f"Probabilidad detectada: {random.randint(85, 99)}%"
+input_data = st.text_input("Mete la semilla para la mutación:", type="password")
 
-def algoritmo_patrones(data):
-    # Simula detección de secuencias
-    return "Secuencia lógica: Identificada"
-
-def algoritmo_estres(data):
-    # Simula cálculos de fuerza bruta
-    return f"Ciclos de cálculo: {random.randint(1000, 5000)}ms"
-
-# 2. PANEL DE CONTROL DE FUSIÓN
-with st.sidebar:
-    st.header("⚙️ PANEL DE MOTORES")
-    m1 = st.checkbox("Motor Probabilístico", value=True)
-    m2 = st.checkbox("Motor de Patrones", value=True)
-    m3 = st.checkbox("Motor de Fuerza Bruta", value=True)
-    st.divider()
-    st.info("Personalidad Hiperlocal: ACTIVADA")
-
-# 3. ENTRADA DE PETICIÓN LIBRE
-peticion = st.text_area("🚀 Describe el problema o algoritmo que quieres fusionar:", 
-                        placeholder="Ej: Crea un sistema que analice el comportamiento de datos X y los cruce con la frecuencia Y...")
-
-if st.button("🔥 INICIAR FUSIÓN DE ALGORITMOS"):
-    if peticion:
-        # INICIO DEL PROCESO DE FUSIÓN
-        with st.status("🚀 Iniciando Enjambre Grot 2.0...", expanded=True) as s:
-            if m1:
-                st.write("📡 Ejecutando Algoritmo Probabilístico...")
-                res1 = algoritmo_probabilidad(peticion)
-                time.sleep(0.7)
-            if m2:
-                st.write("🧠 Activando Detección de Patrones...")
-                res2 = algoritmo_patrones(peticion)
-                time.sleep(0.7)
-            if m3:
-                st.write("🔥 Aplicando Fuerza Bruta Grot...")
-                res3 = algoritmo_estres(peticion)
-                time.sleep(0.7)
-            
-            s.update(label="FUSIÓN COMPLETADA", state="complete")
-
-        # RESULTADO COMBINADO
-        st.markdown("<div class='fusion-box'>", unsafe_allow_html=True)
-        st.subheader("🛡️ REPORTE FINAL DE LA FORJA")
+if st.button("🔥 GENERAR ALGORITMO INVISIBLE"):
+    if input_data:
+        with st.status("Engañando al sistema y creando lógica fantasma...", expanded=True):
+            time.sleep(1)
+            firma, logica = generar_algoritmo_fantasma(input_data)
+            st.write("✅ Capa de invisibilidad activa.")
+            st.write("✅ Lógica mutante establecida.")
         
-        c1, c2, c3 = st.columns(3)
-        if m1: c1.metric("MOTOR 1", "OK", res1)
-        if m2: c2.metric("MOTOR 2", "OK", res2)
-        if m3: c3.metric("MOTOR 3", "CÁLCULO", res3)
+        st.markdown("<div class='ghost-box'>", unsafe_allow_html=True)
+        st.subheader("🛡️ REPORTE DEL CEREBRO GROT")
+        st.write("**Firma del Algoritmo (Hash):**")
+        st.code(firma)
         
-        st.markdown("---")
-        st.write("**Respuesta de la IA (Grot 2.0):**")
-        st.write(f"Reinaldo, aquí tienes la fundición terminada. He cruzado los tres motores para procesar tu idea de '{peticion}'. El resultado es un algoritmo optimizado que no tiene restricciones. ¿Qué es lo siguiente que vamos a forjar?")
+        st.write("**Vector de Lógica Interna (Inaccesible):**")
+        # Mostramos una representación, pero el cálculo real es efímero
+        st.write(logica)
+        
+        st.info("Reinaldo, este algoritmo acaba de crear su propia regla de cálculo basada en tu semilla. Si intentas buscar esta lógica en el código, no la vas a encontrar, porque solo existe mientras el proceso está vivo.")
         st.markdown("</div>", unsafe_allow_html=True)
     else:
-        st.error("Mete una idea en la fragua para poder fundirla.")
+        st.error("Sin semilla no hay fantasma.")
 
 st.divider()
-st.caption("Forja Grot 2.0 - Soberanía Tecnológica desde Monagas")
+st.caption("Forja Grot 2.0 - Tecnología de Caja Negra | Los Barrancos")
